@@ -4,18 +4,67 @@
     <meta charset="utf-8">
     <title>Elm Highcharts</title>
     <script src="elm.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+
+    <!-- link rel="stylesheet" href="style.css" -->
 </head>
 <body>
-<h1>TEST</h1>
-<p>This is a test.</p>
-<div id="first"></div>
-<div id="second"></div>
+    <h1>TEST</h1>
+    <p>This is a test.</p>
+    <div id="container">Loading...</div>
+    <div id="first"></div>
+    <div id="second"></div>
 </body>
 <script>
-var div1 = document.getElementById('first');
-var div2 = document.getElementById('second');
-var runningElmModule1 = Elm.embed(Elm.Main,div1);
-var runningElmModule2 = Elm.embed(Elm.Main,div2);
+    var div1 = document.getElementById('first');
+    var div2 = document.getElementById('second');
+    var runningElmModule1 = Elm.embed(Elm.Main,div1);
+    var runningElmModule2 = Elm.embed(Elm.Main,div2);
+
+    var position = 0;
+
+    var setpos = function(x) { console.log(x); position = x; }
+    runningElmModule1.ports.xpos.subscribe(setpos);
+
+    var genPoint = function(v){ return { x: (new Date()).getTime(), y: v};
+                    }
+    var genPoints = function(n) { var serie = [];
+                var time = (new Date()).getTime();
+                var i;
+                for (i = -1 * n; i<=0; i++) {
+                    serie.push({x: time + i*1000, y: Math.random()});
+                }
+                return serie;
+                }
+    var initDatas = genPoints(20);
+
+    var conf = {
+        title: {text: 'Reactive data'},
+        xAxis: {type: 'datetime'},
+        yAxis: {text: 'value'},
+        legend: {enabled: false},
+        exporting: {enabled: false},
+        chart: {
+            type: 'spline',
+            events: {load: function(){
+                        var series = this.series[0];
+                        setInterval(function(){
+                            series.addPoint(genPoint(position),true,true);
+                                    },1000);}
+                    },
+        },
+        series: [{
+            name: 'Reactive Data',
+            data: initDatas
+        }]
+    };
+
+$(function () {
+    $('#container').highcharts(conf);
+});
+
 </script>
 </html>

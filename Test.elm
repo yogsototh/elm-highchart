@@ -1,5 +1,6 @@
 import Graphics.Element (Element,container, middle,widthOf,heightOf)
 import Signal
+import Mouse
 import Time (fps)
 import Html (..)
 
@@ -9,3 +10,6 @@ main : Signal Element
 main = Signal.map view (Signal.foldp (+) 0 (fps 10))
 
 view t = htmlToElement 100 100 <| text ("coucou " ++ toString t)
+
+port xpos : Signal Int
+port xpos = Signal.map fst Mouse.position
