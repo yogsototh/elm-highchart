@@ -24,11 +24,6 @@
     var runningElmModule1 = Elm.embed(Elm.Main,div1);
     var runningElmModule2 = Elm.embed(Elm.Main,div2);
 
-    var position = 0;
-
-    var setpos = function(x) { console.log(x); position = x; }
-    runningElmModule1.ports.xpos.subscribe(setpos);
-
     var genPoint = function(v){ return { x: (new Date()).getTime(), y: v};
                     }
     var genPoints = function(n) { var serie = [];
@@ -41,6 +36,12 @@
                 }
     var initDatas = genPoints(20);
 
+    var updateSerie = function(){
+                        var series=this.series[0];
+                        runningElmModule1.ports.xpos.subscribe(function(x){
+                           series.addPoint(genPoint(x),true,true); });
+                        };
+
     var conf = {
         title: {text: 'Reactive data'},
         xAxis: {type: 'datetime'},
@@ -49,12 +50,7 @@
         exporting: {enabled: false},
         chart: {
             type: 'spline',
-            events: {load: function(){
-                        var series = this.series[0];
-                        setInterval(function(){
-                            series.addPoint(genPoint(position),true,true);
-                                    },1000);}
-                    },
+            events: {load: updateSerie},
         },
         series: [{
             name: 'Reactive Data',
