@@ -5,58 +5,9 @@
     <title>Elm Highcharts</title>
     <script src="elm.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
-
-
-    <!-- link rel="stylesheet" href="style.css" -->
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+<!-- link rel="stylesheet" href="style.css" -->
 </head>
 <body></body>
-<script>
-    var genPoint = function(v){return {x:(new Date()).getTime(),y:v};};
-    var genPoints = function(n) { var serie = [];
-                var time = (new Date()).getTime();
-                var i;
-                for (i = -1 * n; i<=0; i++) {
-                    serie.push({x: time + i*1000, y: Math.random()});
-                }
-                return serie;
-                }
-    var initDatas = genPoints(20);
-
-    var updateSerie = function(){
-                        var series=this.series;
-                        runningElmModule1.ports.point.subscribe(function(newpoint){
-                            console.log(newpoint);
-                           var p0 = [newpoint[0],newpoint[1][0]];
-                           var p1 = [newpoint[0],newpoint[1][1]];
-                           series[0].addPoint(p0,true,true);
-                           series[1].addPoint(p1,true,true);
-                           });
-                        };
-
-    var conf = {
-        title: {text: 'Reactive data'},
-        xAxis: {type: 'datetime'},
-        yAxis: {text: 'value'},
-        legend: {enabled: false},
-        exporting: {enabled: false},
-        chart: {
-            type: 'spline',
-            events: {load: updateSerie},
-        },
-        series: [{
-            name: 'Reactive X Mouse',
-            data: initDatas
-                },{
-            name: 'Reactive Y Mouse',
-            data: initDatas
-                }]
-    };
-
-    var runningElmModule1 = Elm.fullscreen(Elm.Main);
-
- $(function () { $('.chart').highcharts(conf); });
-
-</script>
+<script src="test.js"></script>
 </html>
