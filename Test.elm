@@ -1,15 +1,22 @@
 import Graphics.Element (Element,container, middle,widthOf,heightOf)
 import Signal
 import Mouse
-import Time (fps)
+import Window
+import Time (fps,timestamp,Time)
 import Html (..)
+import Html.Attributes (..)
 
 htmlToElement w h el = container w h middle (toElement w h el)
 
 main : Signal Element
-main = Signal.map view (Signal.foldp (+) 0 (fps 10))
+main = Signal.map2 view Window.dimensions
+                        (Signal.foldp (+) 0 (fps 10))
 
-view t = htmlToElement 100 100 <| text ("coucou " ++ toString t)
+view dim t = htmlToElement ((fst dim) - 50) ((snd dim) - 50) <|
+                div [class "chart"] [text ("Loading... " ++ toString t)]
 
 port xpos : Signal Int
 port xpos = Signal.map fst Mouse.position
+
+port point : Signal (Time,(Int,Int))
+port point = timestamp Mouse.position
